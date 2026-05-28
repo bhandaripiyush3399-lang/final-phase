@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Offer a Ride - College Ride Share')}"></head>
+<body class="bg-light">
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-md-7">
+                <h2 class="fw-bold mb-1">Offer a Ride</h2>
+                <p class="text-muted mb-4">Share your vehicle with students who missed their bus</p>
+
+                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <form th:action="@{/rides/offer}" method="post">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Vehicle Type</label>
+                                <select name="vehicleType" id="vehicleType" class="form-select" required onchange="updateSeats()">
+                                    <option value="">Select Vehicle Type</option>
+                                    <option value="BIKE">Bike (1 passenger only)</option>
+                                    <option value="CAR">Car</option>
+                                    <option value="LIGHT_VEHICLE">Light Vehicle</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Starting Point</label>
+                                <input type="text" name="routeFrom" class="form-control"
+                                       placeholder="e.g., Swargate" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Destination</label>
+                                <input type="text" name="routeTo" class="form-control"
+                                       placeholder="e.g., PICT College" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Departure Date &amp; Time</label>
+                                <input type="datetime-local" name="departureTime" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Available Seats</label>
+                                <input type="number" name="seats" id="seatsInput" class="form-control"
+                                       min="1" max="6" value="1" required>
+                                <small class="text-muted">Bike: 1 seat only | Car/Light Vehicle: set as needed</small>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Fare per Person (Rs.)</label>
+                                <input type="number" name="fare" class="form-control" step="0.5" min="0"
+                                       placeholder="e.g., 50" required>
+                                <small class="text-muted fst-italic">Fare is negotiable. Payment is cash-based only.</small>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <i class="bi bi-plus-circle me-2"></i>Offer Ride
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+    <script>
+        function updateSeats() {
+            var type = document.getElementById('vehicleType').value;
+            var seatsInput = document.getElementById('seatsInput');
+            if (type === 'BIKE') {
+                seatsInput.value = 1;
+                seatsInput.max = 1;
+                seatsInput.disabled = true;
+            } else {
+                seatsInput.max = 6;
+                seatsInput.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

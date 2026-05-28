@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Emergency Contacts - College Ride Share')}"></head>
+<body class="bg-light">
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="container py-4">
+        <h2 class="fw-bold mb-1">Emergency Contacts</h2>
+        <p class="text-muted">College contact numbers for emergencies</p>
+
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <strong>If you feel unsafe during a ride, contact your college immediately.</strong>
+        </div>
+
+        <div class="row g-3">
+            <div th:each="college : ${colleges}" class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold">
+                            <i class="bi bi-building me-2 text-primary"></i>
+                            <span th:text="${college.collegeName}"></span>
+                            <small class="text-muted" th:text="'(' + ${college.collegeCode} + ')'"></small>
+                        </h5>
+                        <p class="mb-1">
+                            <i class="bi bi-geo-alt me-1 text-muted"></i>
+                            <span th:text="${college.address}"></span>
+                        </p>
+                        <p class="mb-0 text-danger fw-bold fs-5">
+                            <i class="bi bi-telephone-fill me-1"></i>
+                            <span th:text="${college.emergencyContact}"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

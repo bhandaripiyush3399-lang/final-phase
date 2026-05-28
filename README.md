@@ -1,6 +1,25 @@
 # College Ride Share System
 
-A multi-college, desktop-based ride booking and ride sharing system built with **JavaFX** to help students who miss their college bus reach college on time.
+A multi-college ride booking and ride sharing system built with **Java** to help students who miss their college bus reach college on time.
+
+> **Two versions available:**
+> - **Web Application** (Spring Boot) - Deployable online, accessible via browser
+> - **Desktop Application** (JavaFX) - Runs locally on your machine
+
+---
+
+## Live Demo (Web Version)
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/bhandaripiyush3399-lang/final-phase)
+
+**To deploy your own instance:**
+1. Click the "Deploy to Render" button above (or go to [render.com](https://render.com))
+2. Connect your GitHub account
+3. Select this repository
+4. The `render.yaml` file will auto-configure everything
+5. Wait for the build to complete and get your live URL
+
+**Sample Login:** `PICT001` / `password123`
 
 ---
 
@@ -38,9 +57,9 @@ Students who miss their college bus are forced to wait for the next bus or arriv
 
 - Bike: Only **1** passenger allowed
 - Car/Light Vehicle: Provider sets number of available seats
-- Accepting a booking decreases available seats
+- Accepting a booking decreases available seats (seats checked before accepting)
 - When seats reach zero, ride status changes to **FULL**
-- Cancellation restores the seat
+- Cancellation restores the seat only if booking was ACCEPTED
 
 ### Notification System
 - In-app notifications for:
@@ -48,7 +67,7 @@ Students who miss their college bus are forced to wait for the next bus or arriv
   - Ride accepted / rejected
   - Ride cancelled (by provider)
   - Booking cancelled (by seeker)
-- Unread notification count shown in sidebar
+- Unread notification count shown in navigation
 
 ### Safety & Emergency
 - Emergency college contact numbers displayed in the system
@@ -62,113 +81,111 @@ Students who miss their college bus are forced to wait for the next bus or arriv
 
 ## Tech Stack
 
+### Web Application (Spring Boot)
+| Component    | Technology                    |
+|-------------|-------------------------------|
+| Language    | Java 17                       |
+| Framework   | Spring Boot 3.2               |
+| Frontend    | Thymeleaf + Bootstrap 5       |
+| Database    | H2 (embedded, no setup needed)|
+| Security    | Spring Security + BCrypt      |
+| Architecture| MVC                           |
+| Deployment  | Docker / Render               |
+
+### Desktop Application (JavaFX)
 | Component    | Technology               |
 |-------------|--------------------------|
 | Language    | Java 17                  |
 | UI Framework| JavaFX 17                |
-| Architecture| MVC (Model-View-Controller) |
+| Architecture| MVC                      |
 | Database    | MySQL 8.x                |
 | Build Tool  | Maven                    |
 | Security    | BCrypt password hashing  |
-| Notifications| JavaMail (email-ready)  |
 
 ---
 
-## Project Structure (MVC Architecture)
+## Project Structure
 
 ```
 final-phase/
-├── pom.xml                          # Maven build configuration
-├── database/
-│   └── schema.sql                   # Database schema + sample data
 ├── README.md
-└── src/main/java/
-    ├── module-info.java             # Java module descriptor
-    └── com/rideshare/
-        ├── App.java                 # Main entry point
-        │
-        ├── model/                   # MODEL - Data entities & DB connection
-        │   ├── DatabaseConnection.java
-        │   ├── College.java
-        │   ├── User.java
-        │   ├── Ride.java
-        │   ├── Booking.java
-        │   └── Notification.java
-        │
-        ├── dao/                     # Data Access Objects (DB operations)
-        │   ├── CollegeDAO.java
-        │   ├── UserDAO.java
-        │   ├── RideDAO.java
-        │   ├── BookingDAO.java
-        │   └── NotificationDAO.java
-        │
-        ├── controller/              # CONTROLLER - Business logic
-        │   ├── SessionManager.java
-        │   ├── AuthController.java
-        │   ├── RideController.java
-        │   └── NotificationController.java
-        │
-        └── view/                    # VIEW - JavaFX UI screens
-            ├── ViewHelper.java
-            ├── LoginView.java
-            ├── DashboardView.java
-            ├── BookRideView.java
-            ├── OfferRideView.java
-            ├── MyRidesView.java
-            ├── MyBookingsView.java
-            ├── NotificationsView.java
-            └── EmergencyContactsView.java
+├── render.yaml                      # Render deployment config
+│
+├── web-app/                         # WEB APPLICATION (Spring Boot)
+│   ├── pom.xml
+│   ├── Dockerfile
+│   └── src/main/java/com/rideshare/
+│       ├── RideShareWebApplication.java
+│       ├── model/                   # JPA Entities
+│       ├── repository/              # Spring Data repositories
+│       ├── service/                 # Business logic
+│       ├── controller/              # Web controllers
+│       └── config/                  # Security & data init
+│
+├── pom.xml                          # DESKTOP APP (JavaFX)
+├── database/
+│   └── schema.sql                   # MySQL schema + sample data
+└── src/main/java/com/rideshare/     # JavaFX desktop app
+    ├── App.java
+    ├── model/
+    ├── dao/
+    ├── controller/
+    └── view/
 ```
 
 ---
 
-## Prerequisites
+## Quick Start - Web Application
 
-1. **Java 17** (JDK 17 or later)
-2. **Maven 3.6+**
-3. **MySQL 8.x** (running on localhost)
-
----
-
-## Setup Instructions
-
-### Step 1: Clone the Repository
+### Option 1: Run Locally (No database setup needed!)
 
 ```bash
-git clone https://github.com/bhandaripiyush3399-lang/final-phase.git
-cd final-phase
+cd web-app
+mvn clean package -DskipTests
+java -jar target/college-ride-share-web-1.0-SNAPSHOT.jar
 ```
 
-### Step 2: Set Up MySQL Database
+Open **http://localhost:8080** in your browser.
 
-1. Start MySQL server
-2. Run the schema script:
+### Option 2: Deploy to Render (Free hosting)
+
+1. Push this repo to your GitHub
+2. Go to [render.com](https://render.com) → New → Web Service
+3. Connect your GitHub repo
+4. Render auto-detects the `render.yaml` and deploys
+5. Get your live URL!
+
+### Option 3: Docker
+
+```bash
+cd web-app
+docker build -t college-rideshare .
+docker run -p 8080:8080 college-rideshare
+```
+
+---
+
+## Quick Start - Desktop Application (JavaFX)
+
+### Step 1: Set Up MySQL Database
 
 ```bash
 mysql -u root -p < database/schema.sql
 ```
 
-This creates the `college_rideshare` database with all tables and sample data.
+### Step 2: Configure Database Connection
 
-### Step 3: Configure Database Connection
-
-Edit the connection details in `src/main/java/com/rideshare/model/DatabaseConnection.java`:
+Edit `src/main/java/com/rideshare/model/DatabaseConnection.java`:
 
 ```java
-private static final String URL = "jdbc:mysql://localhost:3306/college_rideshare?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
 private static final String USER = "root";        // Your MySQL username
 private static final String PASSWORD = "root";     // Your MySQL password
 ```
 
-### Step 4: Build the Project
+### Step 3: Build & Run
 
 ```bash
 mvn clean compile
-```
-
-### Step 5: Run the Application
-
-```bash
 mvn javafx:run
 ```
 
@@ -210,12 +227,12 @@ users    (1) ──── (N) notifications
 
 1. **Login Screen** - Roll number + password authentication
 2. **Registration Screen** - New student registration with college selection
-3. **Dashboard** - Welcome screen with user info
+3. **Dashboard** - Welcome screen with user info and quick actions
 4. **Book a Ride** - Browse and book available rides
 5. **Offer a Ride** - Create a new ride offer
-6. **My Offered Rides** - Manage rides and handle booking requests
-7. **My Bookings** - Track booking status
-8. **Notifications** - View all notifications
+6. **My Offered Rides** - Manage rides and handle booking requests (accept/reject)
+7. **My Bookings** - Track booking status and cancel if needed
+8. **Notifications** - View all notifications with unread badges
 9. **Emergency Contacts** - College emergency numbers
 
 ---
@@ -231,8 +248,8 @@ users    (1) ──── (N) notifications
 6. Student B receives notification of the decision
 
 ### Cancellation Flow
-- **Seeker cancels**: Seat is restored, provider is notified
-- **Provider cancels ride**: All active bookings are cancelled, all seekers are notified
+- **Seeker cancels**: Seat restored only if booking was ACCEPTED, provider notified
+- **Provider cancels ride**: All active bookings cancelled, all seekers notified
 
 ---
 
@@ -241,22 +258,25 @@ users    (1) ──── (N) notifications
 - Bike allows only 1 passenger
 - Cannot book your own ride
 - Cannot book same ride twice
+- Seat availability checked before accepting a booking (prevents overbooking)
+- Cancelling a PENDING booking does not increment seats (only ACCEPTED bookings do)
 - Ride closes when seats reach zero
 - Past departure times are rejected
 - Cancelled rides cannot be booked
-- Cancellation restores seat count
+- Cancellation restores seat count correctly
 
 ---
 
 ## Academic Requirements Met
 
-- MVC Architecture (Model / DAO / Controller / View)
-- Java 17 with JavaFX
-- MySQL relational database with constraints and foreign keys
+- MVC Architecture (Model / DAO-Repository / Controller / View)
+- Java 17 with JavaFX and Spring Boot
+- MySQL (desktop) and H2 (web) relational databases with constraints
 - Complete CRUD operations
 - Input validation and error handling
 - Password security with BCrypt hashing
 - Notification system for all ride events
+- Deployable web version
 
 ---
 

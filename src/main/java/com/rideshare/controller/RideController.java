@@ -117,14 +117,21 @@ public class RideController {
     }
 
     public boolean acceptBooking(int bookingId, int rideId) {
+        Ride ride = rideDAO.getRideById(rideId);
+        if (ride == null || ride.getAvailableSeats() <= 0) {
+            return false;
+        }
+
+        boolean seatDecremented = rideDAO.decrementAvailableSeats(rideId);
+        if (!seatDecremented) {
+            return false;
+        }
+
         boolean updated = bookingDAO.updateBookingStatus(bookingId, BookingStatus.ACCEPTED);
         if (updated) {
-            rideDAO.decrementAvailableSeats(rideId);
-
             List<Booking> bookings = bookingDAO.getBookingsForRide(rideId);
             for (Booking b : bookings) {
                 if (b.getBookingId() == bookingId) {
-                    Ride ride = rideDAO.getRideById(rideId);
                     notificationDAO.createNotification(new Notification(
                         b.getSeekerId(),
                         "Your booking for the ride from " + ride.getRouteFrom()
@@ -134,6 +141,8 @@ public class RideController {
                     break;
                 }
             }
+        } else {
+            rideDAO.incrementAvailableSeats(rideId);
         }
         return updated;
     }
@@ -159,9 +168,20 @@ public class RideController {
     }
 
     public boolean cancelBooking(int bookingId, int rideId) {
+        List<Booking> bookings = bookingDAO.getBookingsForRide(rideId);
+        BookingStatus previousStatus = null;
+        for (Booking b : bookings) {
+            if (b.getBookingId() == bookingId) {
+                previousStatus = b.getStatus();
+                break;
+            }
+        }
+
         boolean updated = bookingDAO.updateBookingStatus(bookingId, BookingStatus.CANCELLED);
         if (updated) {
-            rideDAO.incrementAvailableSeats(rideId);
+            if (previousStatus == BookingStatus.ACCEPTED) {
+                rideDAO.incrementAvailableSeats(rideId);
+            }
 
             Ride ride = rideDAO.getRideById(rideId);
             if (ride != null) {
