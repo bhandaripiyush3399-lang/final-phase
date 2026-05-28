@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Dashboard - College Ride Share')}"></head>
+<body class="bg-light">
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="container py-4">
+        <div class="row mb-4">
+            <div class="col">
+                <h2 class="fw-bold">Welcome, <span th:text="${user.fullName}"></span>!</h2>
+                <p class="text-muted">Missed your college bus? No worries! Use this system to find or offer rides.</p>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-person-badge text-primary" style="font-size: 2rem;"></i>
+                        <h5 class="mt-2">Roll Number</h5>
+                        <p class="text-muted mb-0" th:text="${user.rollNumber}"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-building text-success" style="font-size: 2rem;"></i>
+                        <h5 class="mt-2">College</h5>
+                        <p class="text-muted mb-0" th:text="${user.college.collegeName}"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-envelope text-info" style="font-size: 2rem;"></i>
+                        <h5 class="mt-2">Email</h5>
+                        <p class="text-muted mb-0" th:text="${user.email}"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6">
+                <a th:href="@{/rides/available}" class="text-decoration-none">
+                    <div class="card border-0 shadow-sm card-hover">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary bg-opacity-10 rounded-3 p-3 me-3">
+                                    <i class="bi bi-search text-primary" style="font-size: 1.5rem;"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">Book a Ride</h5>
+                                    <p class="text-muted mb-0">Find students offering rides and request a seat</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-6">
+                <a th:href="@{/rides/offer}" class="text-decoration-none">
+                    <div class="card border-0 shadow-sm card-hover">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-success bg-opacity-10 rounded-3 p-3 me-3">
+                                    <i class="bi bi-plus-circle text-success" style="font-size: 1.5rem;"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">Offer a Ride</h5>
+                                    <p class="text-muted mb-0">Share your vehicle with fellow students</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm mt-4">
+            <div class="card-body p-4">
+                <h5 class="fw-bold"><i class="bi bi-info-circle me-2 text-primary"></i>How it works</h5>
+                <ul class="mb-0">
+                    <li>Ride providers set route, departure time, vehicle type, seats, and fare</li>
+                    <li>Ride seekers browse available rides and send booking requests</li>
+                    <li>Providers can accept or reject requests</li>
+                    <li>Payment is <strong>cash-based only</strong> and negotiated between riders</li>
+                    <li>Both parties can cancel at any time with automatic notifications</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

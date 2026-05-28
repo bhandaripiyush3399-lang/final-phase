@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Book a Ride - College Ride Share')}"></head>
+<body class="bg-light">
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="container py-4">
+        <h2 class="fw-bold mb-1">Available Rides</h2>
+        <p class="text-muted mb-4">Find and book rides from fellow students</p>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <div th:if="${#lists.isEmpty(rides)}" class="text-center py-5">
+            <i class="bi bi-car-front text-muted" style="font-size: 4rem;"></i>
+            <h5 class="mt-3 text-muted">No rides available at the moment</h5>
+            <p class="text-muted">Check back later or offer your own ride!</p>
+        </div>
+
+        <div class="row g-3">
+            <div th:each="ride : ${rides}" class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5 class="fw-bold mb-2">
+                                    <i class="bi bi-geo-alt text-danger me-1"></i>
+                                    <span th:text="${ride.routeFrom}"></span>
+                                    <i class="bi bi-arrow-right mx-2 text-primary"></i>
+                                    <span th:text="${ride.routeTo}"></span>
+                                </h5>
+                                <div class="mb-2">
+                                    <span class="badge"
+                                          th:classappend="${ride.vehicleType.name() == 'BIKE' ? 'bg-warning text-dark' : 'bg-primary'}"
+                                          th:text="${ride.vehicleDisplayName}"></span>
+                                </div>
+                                <p class="mb-1"><i class="bi bi-person me-1"></i>
+                                    <strong>Offered by:</strong>
+                                    <span th:text="${ride.provider.fullName}"></span>
+                                    (<span th:text="${ride.provider.college.collegeCode}"></span>)
+                                </p>
+                                <p class="mb-1"><i class="bi bi-clock me-1"></i>
+                                    <strong>Departure:</strong>
+                                    <span th:text="${ride.formattedDeparture}"></span>
+                                </p>
+                                <p class="mb-1"><i class="bi bi-people me-1"></i>
+                                    <strong>Seats:</strong>
+                                    <span th:text="${ride.availableSeats + ' / ' + ride.totalSeats}"></span>
+                                </p>
+                                <p class="mb-0 text-success fw-bold">
+                                    <i class="bi bi-cash me-1"></i>
+                                    Rs. <span th:text="${#numbers.formatDecimal(ride.fare, 1, 2)}"></span>
+                                    <small class="text-muted fw-normal">(Cash, Negotiable)</small>
+                                </p>
+                            </div>
+                            <form th:action="@{/rides/book/{id}(id=${ride.rideId})}" method="post">
+                                <button type="submit" class="btn btn-success"
+                                        onclick="return confirm('Book this ride?')">
+                                    <i class="bi bi-check-circle me-1"></i>Book Ride
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

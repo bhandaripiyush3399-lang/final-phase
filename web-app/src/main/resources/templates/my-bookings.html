@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('My Bookings - College Ride Share')}"></head>
+<body class="bg-light">
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="container py-4">
+        <h2 class="fw-bold mb-1">My Bookings</h2>
+        <p class="text-muted mb-4">Track your ride booking requests</p>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <div th:if="${#lists.isEmpty(bookings)}" class="text-center py-5">
+            <i class="bi bi-ticket text-muted" style="font-size: 4rem;"></i>
+            <h5 class="mt-3 text-muted">You haven't booked any rides yet</h5>
+            <a th:href="@{/rides/available}" class="btn btn-primary mt-2">Browse Available Rides</a>
+        </div>
+
+        <div th:each="booking : ${bookings}" class="card border-0 shadow-sm mb-3">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h5 class="fw-bold mb-2">
+                            <span th:text="${booking.ride.routeFrom}"></span>
+                            <i class="bi bi-arrow-right mx-2 text-primary"></i>
+                            <span th:text="${booking.ride.routeTo}"></span>
+                        </h5>
+                        <span class="badge me-2"
+                              th:classappend="${booking.status.name() == 'PENDING' ? 'bg-warning text-dark' :
+                                               booking.status.name() == 'ACCEPTED' ? 'bg-success' :
+                                               booking.status.name() == 'REJECTED' ? 'bg-danger' : 'bg-secondary'}"
+                              th:text="${booking.status}"></span>
+                        <p class="mb-1 mt-2">
+                            <i class="bi bi-person me-1"></i><strong>Ride Provider:</strong>
+                            <span th:text="${booking.ride.provider.fullName}"></span>
+                        </p>
+                        <p class="mb-1">
+                            <i class="bi bi-car-front me-1"></i><strong>Vehicle:</strong>
+                            <span th:text="${booking.ride.vehicleDisplayName}"></span>
+                        </p>
+                        <p class="mb-1 text-success fw-bold">
+                            <i class="bi bi-cash me-1"></i>Rs.
+                            <span th:text="${#numbers.formatDecimal(booking.ride.fare, 1, 2)}"></span>
+                            <small class="text-muted fw-normal">(Cash, Negotiable)</small>
+                        </p>
+                        <p class="mb-0 text-muted small">
+                            Booked on: <span th:text="${booking.bookingTime}"></span>
+                        </p>
+                    </div>
+                    <div th:if="${booking.status.name() == 'PENDING' || booking.status.name() == 'ACCEPTED'}">
+                        <form th:action="@{/bookings/cancel/{id}(id=${booking.bookingId})}" method="post">
+                            <button type="submit" class="btn btn-outline-danger btn-sm"
+                                    onclick="return confirm('Cancel your booking?')">
+                                <i class="bi bi-x-circle me-1"></i>Cancel
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

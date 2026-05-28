@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: college-ride-share
+    runtime: docker
+    dockerfilePath: ./web-app/Dockerfile
+    dockerContext: ./web-app
+    plan: free
+    envVars:
+      - key: PORT
+        value: 8080
